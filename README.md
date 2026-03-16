@@ -1,42 +1,17 @@
-# sv
+# Resident Evil 4 Remake Treasure Optimizer
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A friendly tool designed to help players of **Resident Evil 4 Remake** get the most value out of their treasures by recommending the best way to slot gems. It takes the guesswork out of identifying which gem combinations give the highest sell price, so you can make smart in-game decisions quickly.
 
-## Creating a project
+## What this project does
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Evaluates treasure gem sockets and suggests the highest-value gem assignments
+- Helps you understand which gem combinations are worth prioritizing
+- Saves time by making gemstone slotting decisions straightforward and reliable
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## Who it's for
 
-To recreate this project with the same configuration:
+This is for players who want to maximize income from inventory management without having to memorize all the gem values and scoring rules.
 
-```sh
-# recreate this project
-npx sv@0.12.7 create --template minimal --types ts --add prettier --install npm re4-treasure-optimizer
-```
+## A note about this README
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+This README was generated with the assistance of an AI tool to help quickly capture the purpose and intent of the project.
