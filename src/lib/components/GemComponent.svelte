@@ -11,7 +11,7 @@
 
 <div class="container">
 	<img class="gem-image" src={gem.imageSrc} alt={gem.name} />
-	<span class="gem-name">{gem.name}</span>
+	<span class="gem-name">{gem.symbol}{gem.name}</span>
 	<span class="gem-value">({gem.baseValue} ptas.)</span>
 	<span class="gem-quantity">
 		{#if input}
@@ -20,6 +20,9 @@
 			{gem.quantity}
 		{/if}
 	</span>
+	{#if !input}
+		<span class="gem-value-final">{gem.baseValue * gem.quantity} ptas.</span>
+	{/if}
 </div>
 
 <style>
@@ -71,5 +74,12 @@
 		display: block;
 		font-size: 0.85rem;
 		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.gem-value-final {
+		display: block;
+		font-size: 0.85rem;
+		font-weight: bold;
+		color: var(--color-green);
 	}
 </style>

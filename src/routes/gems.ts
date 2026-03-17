@@ -9,6 +9,7 @@ import type { GemType } from '$lib/types/GemType';
 export const gems: GemType[] = [
     {
         name: 'Ruby',
+        symbol: "🔴",
         baseValue: 3000,
         imageSrc: imgRuby,
         large: false,
@@ -16,6 +17,7 @@ export const gems: GemType[] = [
     },
     {
         name: 'Sapphire',
+        symbol: "🔵",
         baseValue: 4000,
         imageSrc: imgSapphire,
         large: false,
@@ -23,6 +25,7 @@ export const gems: GemType[] = [
     },
     {
         name: 'Yellow Diamond',
+        symbol: "🟡",
         baseValue: 7000,
         imageSrc: imgYellowDiamond,
         large: false,
@@ -30,6 +33,7 @@ export const gems: GemType[] = [
     },
     {
         name: 'Emerald',
+        symbol: "🟩",
         baseValue: 5000,
         imageSrc: imgEmerald,
         large: true,
@@ -37,6 +41,7 @@ export const gems: GemType[] = [
     },
     {
         name: 'Alexandrite',
+        symbol: "🟪",
         baseValue: 6000,
         imageSrc: imgAlexandrite,
         large: true,
@@ -44,6 +49,7 @@ export const gems: GemType[] = [
     },
     {
         name: 'Red Beryl',
+        symbol: "🟥",
         baseValue: 9000,
         imageSrc: imgRedBeryl,
         large: true,

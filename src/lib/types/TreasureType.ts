@@ -3,6 +3,7 @@ import type { GemType } from "./GemType";
 export type TreasureType = {
     name: string;
     baseValue: number;
+    finalValue: number | undefined;
     smallSlots: number;
     largeSlots: number;
     imageSrc: string;

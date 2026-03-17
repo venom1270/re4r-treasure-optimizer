@@ -48,6 +48,8 @@
 		<span class="treasure-quantity">
 			<input type="number" min="0" max="100" bind:value={treasure.quantity} />
 		</span>
+	{:else}
+		<span class="treasure-value-final">{treasure.finalValue} ptas.</span>
 	{/if}
 </div>
 
@@ -110,5 +112,12 @@
 		display: block;
 		font-size: 0.85rem;
 		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.treasure-value-final {
+		display: block;
+		font-size: 0.85rem;
+		font-weight: bold;
+		color: var(--color-green);
 	}
 </style>
