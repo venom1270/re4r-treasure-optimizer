@@ -6,3 +6,36 @@
     --color-green: #91ff6e;
     --color-red: #b4202e;
 }
+
+.red-color {
+    color: var(--color-red);
+}
+
+.green-color {
+    color: var(--color-green);
+}
+
+.item {
+    margin: 10px;
+    position: relative;
+    width: min(140px, 100%);
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(180deg, #101216 0%, #08090d 100%);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+    text-align: center;
+    transition:
+        box-shadow 200ms ease,
+        outline 200ms ease;
+}
+
+.item:hover {
+    box-shadow:
+        0 0 10px 5px rgba(255, 255, 255, 0.5);
+    outline-offset: 0;
+}

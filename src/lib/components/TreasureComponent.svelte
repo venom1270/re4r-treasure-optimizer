@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { GemType } from '$lib/types/GemType';
 	import type { TreasureType } from '$lib/types/TreasureType';
+	import { formatNumber } from '$lib/util/formatNumber';
 
 	interface TreasureComponentProps {
 		treasure: TreasureType;
@@ -29,7 +30,7 @@
 	}
 </script>
 
-<div class="container">
+<div class="item">
 	<img class="treasure-image" src={treasure.imageSrc} alt={treasure.name} />
 	<div class="treasure-slots">
 		{#each treasure.gemConfiguration as config}
@@ -43,44 +44,17 @@
 		{/each}
 	</div>
 	<span class="treasure-name">{treasure.name}</span>
-	<span class="treasure-value">({treasure.baseValue} ptas.)</span>
+	<span class="treasure-value">({formatNumber(treasure.baseValue)} ptas.)</span>
 	{#if input}
 		<span class="treasure-quantity">
 			<input type="number" min="0" max="100" bind:value={treasure.quantity} />
 		</span>
 	{:else}
-		<span class="treasure-value-final">{treasure.finalValue} ptas.</span>
+		<span class="treasure-value-final">{formatNumber(treasure.finalValue ?? 0)} ptas.</span>
 	{/if}
 </div>
 
 <style>
-	.container {
-		margin: 10px;
-		position: relative;
-		width: min(140px, 100%);
-		min-height: 260px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 1rem;
-		background: linear-gradient(180deg, #101216 0%, #08090d 100%);
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
-		text-align: center;
-		transition:
-			box-shadow 500ms ease,
-			outline 500ms ease;
-	}
-
-	.container:hover {
-		box-shadow:
-			0 18px 30px rgba(0, 0, 0, 0.7),
-			0 0 0 4px rgba(255, 255, 255, 0.25);
-		outline: 2px solid rgba(255, 255, 255, 0.85);
-		outline-offset: 0;
-	}
-
 	.treasure-image {
 		width: 100%;
 		max-width: 160px;

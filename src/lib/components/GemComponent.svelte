@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { GemType } from '$lib/types/GemType';
+	import { formatNumber } from '$lib/util/formatNumber';
 
 	interface GemComponentProps {
 		gem: GemType;
@@ -9,10 +10,10 @@
 	let { gem = $bindable(), input }: GemComponentProps = $props();
 </script>
 
-<div class="container">
+<div class="item">
 	<img class="gem-image" src={gem.imageSrc} alt={gem.name} />
 	<span class="gem-name">{gem.symbol}{gem.name}</span>
-	<span class="gem-value">({gem.baseValue} ptas.)</span>
+	<span class="gem-value">({formatNumber(gem.baseValue)} ptas.)</span>
 	<span class="gem-quantity">
 		{#if input}
 			<input type="number" min="0" max="100" bind:value={gem.quantity} />
@@ -21,37 +22,11 @@
 		{/if}
 	</span>
 	{#if !input}
-		<span class="gem-value-final">{gem.baseValue * gem.quantity} ptas.</span>
+		<span class="gem-value-final">{formatNumber(gem.baseValue * gem.quantity)} ptas.</span>
 	{/if}
 </div>
 
 <style>
-	.container {
-		margin: 10px;
-		position: relative;
-		width: min(140px, 100%);
-		min-height: 260px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 1rem;
-		background: linear-gradient(180deg, #101216 0%, #08090d 100%);
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
-		text-align: center;
-		transition:
-			box-shadow 500ms ease,
-			outline 500ms ease;
-	}
-
-	.container:hover {
-		box-shadow:
-			0 18px 30px rgba(0, 0, 0, 0.7),
-			0 0 0 4px rgba(255, 255, 255, 0.25);
-		outline: 2px solid rgba(255, 255, 255, 0.85);
-		outline-offset: 0;
-	}
 
 	.gem-image {
 		width: 100%;
