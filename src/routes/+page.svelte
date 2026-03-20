@@ -150,9 +150,14 @@
 		>
 	</p>
 	<p>
-		<a
+		<!--a
 			target="#"
 			href="https://www.desktophut.com/live-wallpaper/Smoke-Black-Screen-Background-For-Edits-Royalty-Free-Stock-Footage-Template-Video-Background"
+			>And this for the background!</a
+		-->
+		<a
+			target="#"
+			href="https://www.vecteezy.com/video/46709823-dust-particles-in-motion-in-black-screen-filmed-with-red-camera"
 			>And this for the background!</a
 		>
 	</p>
@@ -393,49 +398,6 @@
 		text-align: center;
 	}
 
-	.upload-label {
-		font-weight: bold;
-		color: #fff;
-	}
-
-	.upload-section input[type='file'] {
-		display: none;
-	}
-
-	.drop-zone {
-		width: 100%;
-		max-width: 1100px;
-		height: 170px;
-		border: 2px dashed rgba(255, 255, 255, 0.45);
-		border-radius: 12px;
-		background: rgba(255, 255, 255, 0.05);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 10px;
-		text-align: center;
-		color: rgba(255, 255, 255, 0.8);
-		cursor: pointer;
-		transition:
-			border 0.2s ease,
-			background 0.2s ease;
-	}
-
-	.drop-zone.drag-over {
-		border-color: var(--color-green);
-		background: rgba(34, 203, 122, 0.15);
-	}
-
-	.small-button {
-		background: rgba(255, 255, 255, 0.15);
-		border: 1px solid rgba(255, 255, 255, 0.45);
-		border-radius: 6px;
-		color: white;
-		cursor: pointer;
-		padding: 8px 12px;
-	}
-
 	.preview img {
 		max-width: 300px;
 		max-height: 180px;
@@ -450,11 +412,11 @@
 	}
 
 	.status.success {
-		color: #9f9;
+		color: var(--color-green);
 	}
 
 	.status.error {
-		color: #f99;
+		color: var(--color-red);
 	}
 
 	.calculate-button[disabled] {

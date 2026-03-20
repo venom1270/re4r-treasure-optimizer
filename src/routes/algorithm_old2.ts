@@ -5,7 +5,7 @@ import type { TreasureType } from "$lib/types/TreasureType";
 let finalConfigurations: FinalConfigurationType[] = [];
 
 
-export function alogorithm(gems: GemType[], treasures: TreasureType[]):FinalConfigurationType[] {
+export function alogorithm(gems: GemType[], treasures: TreasureType[]): FinalConfigurationType[] {
     finalConfigurations = [];
 
     // Expand treasures by quantity so we treat each instance separately
@@ -74,23 +74,23 @@ export function alogorithm(gems: GemType[], treasures: TreasureType[]):FinalConf
         const treasuresKey = fc.treasures
             .slice()
             .sort((a, b) => a.name.localeCompare(b.name))
-                .sort((a, b) => {
-                    const nameCompare = a.name.localeCompare(b.name);
-                    if (nameCompare !== 0) return nameCompare;
+            .sort((a, b) => {
+                const nameCompare = a.name.localeCompare(b.name);
+                if (nameCompare !== 0) return nameCompare;
 
-                    const aGemConfig = (a.gemConfiguration ?? [])
-                        .slice()
-                        .sort((g1, g2) => g1.name.localeCompare(g2.name))
-                        .map(g => g.name)
-                        .join(",");
-                    const bGemConfig = (b.gemConfiguration ?? [])
-                        .slice()
-                        .sort((g1, g2) => g1.name.localeCompare(g2.name))
-                        .map(g => g.name)
-                        .join(",");
+                const aGemConfig = (a.gemConfiguration ?? [])
+                    .slice()
+                    .sort((g1, g2) => g1.name.localeCompare(g2.name))
+                    .map(g => g.name)
+                    .join(",");
+                const bGemConfig = (b.gemConfiguration ?? [])
+                    .slice()
+                    .sort((g1, g2) => g1.name.localeCompare(g2.name))
+                    .map(g => g.name)
+                    .join(",");
 
-                    return aGemConfig.localeCompare(bGemConfig);
-                })
+                return aGemConfig.localeCompare(bGemConfig);
+            })
             .map(t => {
                 const gemNames = (t.gemConfiguration ?? [])
                     .slice()

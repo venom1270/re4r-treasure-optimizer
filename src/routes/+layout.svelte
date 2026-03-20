@@ -13,7 +13,7 @@
 </script>
 
 <video bind:this={video} autoplay muted loop playsinline class="bg-video">
-	<source src="/background.mp4" type="video/mp4" />
+	<source src="/background.mov" type="video/mp4" />
 </video>
 
 <svelte:head>
