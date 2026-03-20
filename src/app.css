@@ -5,6 +5,9 @@
 :root {
     --color-green: #91ff6e;
     --color-red: #b4202e;
+
+    --quantity-size: 35px;
+    --quantity-background: rgba(0, 0, 0, 0);
 }
 
 .red-color {
@@ -19,7 +22,7 @@
     margin: 10px;
     position: relative;
     width: min(140px, 100%);
-    min-height: 260px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;

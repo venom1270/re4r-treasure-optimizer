@@ -31,7 +31,22 @@
 </script>
 
 <div class="item">
-	<img class="treasure-image" src={treasure.imageSrc} alt={treasure.name} draggable="false" />
+	<div class="image-container">
+		<img class="treasure-image" src={treasure.imageSrc} alt={treasure.name} draggable="false" />
+		{#if input}
+			<input
+				class="treasure-quantity-input"
+				type="number"
+				min="0"
+				max="100"
+				bind:value={treasure.quantity}
+			/>
+		{:else}
+			<span class="treasure-quantity">
+				{treasure.quantity}
+			</span>
+		{/if}
+	</div>
 	<div class="treasure-slots">
 		{#each treasure.gemConfiguration as config}
 			{getSlotVisual(config)}
@@ -45,11 +60,7 @@
 	</div>
 	<span class="treasure-name">{treasure.name}</span>
 	<span class="treasure-value">({formatNumber(treasure.baseValue)} ptas.)</span>
-	{#if input}
-		<span class="treasure-quantity">
-			<input type="number" min="0" max="100" bind:value={treasure.quantity} />
-		</span>
-	{:else}
+	{#if !input}
 		<span class="treasure-value-final">{formatNumber(treasure.finalValue ?? 0)} ptas.</span>
 	{/if}
 </div>
@@ -62,6 +73,46 @@
 		border-radius: 4px;
 		object-fit: contain;
 		box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+	}
+
+	.image-container {
+		position: relative;
+	}
+
+	.treasure-quantity {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		color: white;
+		background: var(--quantity-background);
+		width: var(--quantity-size);
+		font-size: 1.2rem;
+		height: var(--quantity-size);
+		line-height: var(--quantity-size);
+	}
+
+	.treasure-quantity-input {
+		color: white;
+		background: var(--quantity-background);
+		border: none;
+		text-align: right;
+		width: 100%;
+		height: 100%;
+		font-size: 1.2rem;
+		text-align: center;
+		position: absolute;
+		width: var(--quantity-size);
+		height: var(--quantity-size);
+		bottom: 0;
+		right: 0;
+	}
+
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		margin: 0;
 	}
 
 	.treasure-slots {
