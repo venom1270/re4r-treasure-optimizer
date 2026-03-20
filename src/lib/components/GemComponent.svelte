@@ -11,7 +11,7 @@
 </script>
 
 <div class="item">
-	<img class="gem-image" src={gem.imageSrc} alt={gem.name} />
+	<img class="gem-image" src={gem.imageSrc} alt={gem.name} draggable="false" />
 	<span class="gem-name">{gem.symbol}{gem.name}</span>
 	<span class="gem-value">({formatNumber(gem.baseValue)} ptas.)</span>
 	<span class="gem-quantity">
@@ -27,7 +27,6 @@
 </div>
 
 <style>
-
 	.gem-image {
 		width: 100%;
 		max-width: 160px;

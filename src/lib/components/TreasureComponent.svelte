@@ -31,7 +31,7 @@
 </script>
 
 <div class="item">
-	<img class="treasure-image" src={treasure.imageSrc} alt={treasure.name} />
+	<img class="treasure-image" src={treasure.imageSrc} alt={treasure.name} draggable="false" />
 	<div class="treasure-slots">
 		{#each treasure.gemConfiguration as config}
 			{getSlotVisual(config)}

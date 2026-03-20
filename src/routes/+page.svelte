@@ -1,18 +1,118 @@
 <script lang="ts">
 	import TreasureComponent from '$lib/components/TreasureComponent.svelte';
-	import { treasures } from './treasures';
-	import { gems } from './gems';
+	import { treasures as initialTreasures } from './treasures';
+	import { gems as initialGems } from './gems';
 	import GemComponent from '$lib/components/GemComponent.svelte';
 	import { alogorithm } from './algorithm_old2';
 	import type { FinalConfigurationType } from '$lib/types/FinalConfigurationType';
 	import { formatNumber } from '$lib/util/formatNumber';
 	import { tick } from 'svelte';
 
+	let gems = $state(initialGems);
+	let treasures = $state(initialTreasures);
 	// TODO: looks good background: https://www.vecteezy.com/video/64896420-dust-floating-particles-with-transparent-background
 
 	let finalConfigurations: FinalConfigurationType[] = $state([]);
 	let showCount = $state(1);
 	const SHOW_INCREASE = 1;
+
+	let imagePreviewUrl = $state('');
+	let isParsingInventory = $state(false);
+	let inventoryMessage = $state('');
+	let inventoryError = $state('');
+	let isDragOver = $state(false);
+
+	function onDragEnter(event: DragEvent) {
+		event.preventDefault();
+		isDragOver = true;
+	}
+
+	function onDragOver(event: DragEvent) {
+		event.preventDefault();
+		isDragOver = true;
+	}
+
+	function onDragLeave(event: DragEvent) {
+		event.preventDefault();
+		isDragOver = false;
+	}
+
+	async function onDrop(event: DragEvent) {
+		event.preventDefault();
+		isDragOver = false;
+		const file = event.dataTransfer?.files?.[0];
+		if (!file) return;
+		if (!file.type.startsWith('image/')) {
+			inventoryError = 'Please drop a valid image file.';
+			return;
+		}
+
+		imagePreviewUrl = URL.createObjectURL(file);
+		await parseInventoryImage(file);
+	}
+
+	function applyParsedInventory(parsed: {
+		gems?: Array<{ name: string; quantity: number }>;
+		treasures?: Array<{ name: string; quantity: number }>;
+	}) {
+		if (parsed.gems) {
+			for (const gem of gems) gem.quantity = 0;
+			for (const item of parsed.gems) {
+				const match = gems.find((g) => g.name.toLowerCase() === item.name.toLowerCase());
+				if (match) match.quantity = Number(item.quantity) || 0;
+			}
+		}
+
+		if (parsed.treasures) {
+			for (const treasure of treasures) treasure.quantity = 0;
+			for (const item of parsed.treasures) {
+				const match = treasures.find((t) => t.name.toLowerCase() === item.name.toLowerCase());
+				if (match) match.quantity = Number(item.quantity) || 0;
+			}
+		}
+	}
+
+	async function parseInventoryImage(file: File) {
+		isParsingInventory = true;
+		inventoryMessage = 'Sending screenshot to OpenAI...';
+		inventoryError = '';
+
+		try {
+			const formData = new FormData();
+			formData.append('screenshot', file);
+
+			const response = await fetch('/api/inventory-from-image', {
+				method: 'POST',
+				body: formData
+			});
+
+			if (!response.ok) {
+				const text = await response.text();
+				throw new Error(`OpenAI processing failed: ${text}`);
+			}
+
+			const data = await response.json();
+			if (data.error) throw new Error(data.error);
+			console.log(data);
+
+			applyParsedInventory(data);
+			inventoryMessage = 'Inventory parsed successfully! Check values and press Calculate.';
+		} catch (error: any) {
+			inventoryError = error?.message || String(error);
+			inventoryMessage = '';
+		} finally {
+			isParsingInventory = false;
+		}
+	}
+
+	async function onScreenshotSelected(event: Event) {
+		const target = event.target as HTMLInputElement;
+		const file = target?.files?.[0];
+		if (!file) return;
+
+		imagePreviewUrl = URL.createObjectURL(file);
+		await parseInventoryImage(file);
+	}
 
 	async function calculate() {
 		finalConfigurations = alogorithm(gems, treasures);
@@ -30,68 +130,99 @@
 	}
 </script>
 
-<h1 class="title">
-	<span class="red-color">R</span>E4<span style="color: gray; font-size: 0.75em">R</span> <span class="red-color">T</span>reasure
-	<span class="red-color">O</span>ptimizer
-</h1>
+<div
+	class="page-drop-area"
+	ondragenter={onDragEnter}
+	ondragover={onDragOver}
+	ondragleave={onDragLeave}
+	ondrop={onDrop}
+	role="region"
+>
+	<h1 class="title">
+		<span class="red-color">R</span>E4<span style="color: gray; font-size: 0.75em">R</span>
+		<span class="red-color">T</span>reasure
+		<span class="red-color">O</span>ptimizer
+	</h1>
 
-<p>
-	<a target="#" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2956317077"
-		>Credit to this Steam guide for all info in one place!</a
-	>
-</p>
-<p>
-	<a
-		target="#"
-		href="https://www.desktophut.com/live-wallpaper/Smoke-Black-Screen-Background-For-Edits-Royalty-Free-Stock-Footage-Template-Video-Background"
-		>And this for the background!</a
-	>
-</p>
+	<p>
+		<a target="#" href="https://steamcommunity.com/sharedfiles/filedetails/?id=2956317077"
+			>Credit to this Steam guide for all info in one place!</a
+		>
+	</p>
+	<p>
+		<a
+			target="#"
+			href="https://www.desktophut.com/live-wallpaper/Smoke-Black-Screen-Background-For-Edits-Royalty-Free-Stock-Footage-Template-Video-Background"
+			>And this for the background!</a
+		>
+	</p>
 
-<button class="calculate-button" onclick={calculate}>Calculate optimal configuration</button>
+	<div class="upload-section">
+		{#if imagePreviewUrl}
+			<div class="preview">
+				<img src={imagePreviewUrl} alt="Uploaded inventory screenshot preview" draggable="false" />
+			</div>
+		{/if}
 
-<div class="container">
-	<div class="container-left">
-		<div class="gem-list">
-			{#each gems as _, i}
-				<GemComponent bind:gem={gems[i]} input={true} />
-			{/each}
+		{#if isParsingInventory}
+			<div class="status">Parsing screenshot, please wait...</div>
+		{:else if inventoryMessage}
+			<div class="status success">{inventoryMessage}</div>
+		{:else if inventoryError}
+			<div class="status error">{inventoryError}</div>
+		{/if}
+	</div>
+
+	<button class="calculate-button" onclick={calculate} disabled={isParsingInventory}>
+		{#if isParsingInventory}
+			<span class="spinner"></span> Parsing screenshot...
+		{:else}
+			Calculate optimal configuration
+		{/if}
+	</button>
+
+	<div class="container">
+		<div class="container-left">
+			<div class="gem-list">
+				{#each gems as _, i}
+					<GemComponent bind:gem={gems[i]} input={true} />
+				{/each}
+			</div>
+		</div>
+
+		<div class="container-right">
+			<div class="treasure-list">
+				{#each treasures as _, j}
+					<TreasureComponent bind:treasure={treasures[j]} input={true} />
+				{/each}
+			</div>
 		</div>
 	</div>
 
-	<div class="container-right">
-		<div class="treasure-list">
-			{#each treasures as _, j}
-				<TreasureComponent bind:treasure={treasures[j]} input={true} />
-			{/each}
-		</div>
+	<div class="configurations">
+		{#each finalConfigurations.slice(0, showCount) as c}
+			<hr />
+			<div class="configuration">
+				<div class="configuration-value">{formatNumber(c.value)} ptas.</div>
+				<div class="configuration-gems">
+					{#each c.gems as gem}
+						{#if gem.quantity > 0}
+							<GemComponent {gem} input={false} />
+						{/if}
+					{/each}
+				</div>
+				<div class="configuration-treasures">
+					{#each c.treasures as treasure}
+						<TreasureComponent {treasure} input={false} />
+					{/each}
+				</div>
+			</div>
+		{/each}
+
+		{#if showCount < finalConfigurations.length}
+			<button class="show-more" onclick={increaseShowCount}> Show more </button>
+		{/if}
 	</div>
-</div>
-
-
-<div class="configurations">
-	{#each finalConfigurations.slice(0, showCount) as c}
-		<hr/>
-		<div class="configuration">
-			<div class="configuration-value">{formatNumber(c.value)} ptas.</div>
-			<div class="configuration-gems">
-				{#each c.gems as gem}
-					{#if gem.quantity > 0}
-						<GemComponent {gem} input={false} />
-					{/if}
-				{/each}
-			</div>
-			<div class="configuration-treasures">
-				{#each c.treasures as treasure}
-					<TreasureComponent {treasure} input={false} />
-				{/each}
-			</div>
-		</div>
-	{/each}
-
-	{#if showCount < finalConfigurations.length}
-		<button class="show-more" onclick={increaseShowCount}> Show more </button>
-	{/if}
 </div>
 
 <style>
@@ -113,15 +244,16 @@
 	.container {
 		display: flex;
 		gap: 50px;
-    	justify-content: center;
+		justify-content: center;
 		align-content: center;
 		padding-top: 50px;
 		padding-bottom: 30px;
 	}
 
-	.container-left, .container-right {
+	.container-left,
+	.container-right {
 		display: flex;
-		width:1000px
+		width: 1000px;
 	}
 
 	.container-left {
@@ -181,7 +313,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-
 	}
 
 	.title {
@@ -212,9 +343,6 @@
 		color: rgba(255, 255, 255, 1);
 		text-shadow: 0 0 10px var(--color-red);
 	}
-
-
-
 
 	.show-more {
 		margin: 0 50px 50px;
@@ -252,5 +380,105 @@
 	.calculate-button:hover {
 		background: var(--color-red);
 		box-shadow: 0 0 18px var(--color-green);
+	}
+
+	.upload-section {
+		width: min(100%, 1100px);
+		margin: 0 auto 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.upload-label {
+		font-weight: bold;
+		color: #fff;
+	}
+
+	.upload-section input[type='file'] {
+		display: none;
+	}
+
+	.drop-zone {
+		width: 100%;
+		max-width: 1100px;
+		height: 170px;
+		border: 2px dashed rgba(255, 255, 255, 0.45);
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.05);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		text-align: center;
+		color: rgba(255, 255, 255, 0.8);
+		cursor: pointer;
+		transition:
+			border 0.2s ease,
+			background 0.2s ease;
+	}
+
+	.drop-zone.drag-over {
+		border-color: var(--color-green);
+		background: rgba(34, 203, 122, 0.15);
+	}
+
+	.small-button {
+		background: rgba(255, 255, 255, 0.15);
+		border: 1px solid rgba(255, 255, 255, 0.45);
+		border-radius: 6px;
+		color: white;
+		cursor: pointer;
+		padding: 8px 12px;
+	}
+
+	.preview img {
+		max-width: 300px;
+		max-height: 180px;
+		object-fit: contain;
+		border: 1px solid rgba(255, 255, 255, 0.5);
+		border-radius: 6px;
+	}
+
+	.status {
+		color: #fff;
+		font-size: 0.9rem;
+	}
+
+	.status.success {
+		color: #9f9;
+	}
+
+	.status.error {
+		color: #f99;
+	}
+
+	.calculate-button[disabled] {
+		cursor: not-allowed;
+		opacity: 0.65;
+	}
+
+	.spinner {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		border: 2px solid rgba(255, 255, 255, 0.5);
+		border-top-color: #fff;
+		border-radius: 50%;
+		margin-right: 0.45rem;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 </style>
