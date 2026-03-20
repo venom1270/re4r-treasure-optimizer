@@ -114,12 +114,42 @@
 		await parseInventoryImage(file);
 	}
 
+	let worker: Worker | null = null;
+	let isCalculating = $state(false);
+	let calculationError = $state('');
 	async function calculate() {
-		finalConfigurations = alogorithm(gems, treasures);
-		showCount = 1;
+		calculationError = '';
+		isCalculating = true;
 
-		await tick();
-		window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+		// create worker (important: use new URL for Vite/SvelteKit)
+		if (!worker) {
+			worker = new Worker(new URL('./webworkers.ts', import.meta.url), {
+				type: 'module'
+			});
+		}
+
+		worker.onmessage = async (event) => {
+			const { success, result, error } = event.data;
+
+			if (!success) {
+				calculationError = error;
+				isCalculating = false;
+				return;
+			}
+
+			finalConfigurations = result;
+			showCount = 1;
+
+			isCalculating = false;
+
+			await tick();
+			window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+		};
+
+		worker.postMessage({
+			gems: JSON.parse(JSON.stringify(gems)),
+			treasures: JSON.parse(JSON.stringify(treasures))
+		});
 	}
 
 	async function increaseShowCount() {
@@ -178,9 +208,15 @@
 		{/if}
 	</div>
 
-	<button class="calculate-button" onclick={calculate} disabled={isParsingInventory}>
+	<button
+		class="calculate-button"
+		onclick={calculate}
+		disabled={isParsingInventory || isCalculating}
+	>
 		{#if isParsingInventory}
 			<span class="spinner"></span> Parsing screenshot...
+		{:else if isCalculating}
+			<span class="spinner"></span> Calculating...
 		{:else}
 			Calculate optimal configuration
 		{/if}
