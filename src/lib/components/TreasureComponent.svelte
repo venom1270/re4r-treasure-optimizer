@@ -41,10 +41,6 @@
 				max="100"
 				bind:value={treasure.quantity}
 			/>
-		{:else}
-			<span class="treasure-quantity">
-				{treasure.quantity}
-			</span>
 		{/if}
 	</div>
 	<div class="treasure-slots">
