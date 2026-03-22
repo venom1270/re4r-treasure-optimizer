@@ -51,6 +51,9 @@ export function alogorithm(gems: GemType[], treasures: TreasureType[]): FinalCon
 
     let bestValue = -Infinity;
 
+    console.log(maxGainPerTreasure);
+    console.log(treasureConfigs);
+
     console.log("STARTING ALGORITHM...", gems, expandedTreasures);
 
     backtrack(0, 0);

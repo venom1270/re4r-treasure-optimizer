@@ -3,7 +3,6 @@
 	import { treasures as initialTreasures } from './treasures';
 	import { gems as initialGems } from './gems';
 	import GemComponent from '$lib/components/GemComponent.svelte';
-	import { alogorithm } from './algorithm_old2';
 	import type { FinalConfigurationType } from '$lib/types/FinalConfigurationType';
 	import { formatNumber } from '$lib/util/formatNumber';
 	import { tick } from 'svelte';
@@ -11,6 +10,7 @@
 	let gems = $state(initialGems);
 	let treasures = $state(initialTreasures);
 	// TODO: looks good background: https://www.vecteezy.com/video/64896420-dust-floating-particles-with-transparent-background
+	// https://www.vecteezy.com/video/2153904-loop-white-dust-particles-floating-to-top-right
 
 	let finalConfigurations: FinalConfigurationType[] = $state([]);
 	let showCount = $state(1);

@@ -8,12 +8,12 @@
 	let video: HTMLVideoElement;
 
 	onMount(() => {
-		video.playbackRate = 0.65; // 0.5 = half speed
+		//video.playbackRate = 0.8; // 0.5 = half speed
 	});
 </script>
 
 <video bind:this={video} autoplay muted loop playsinline class="bg-video">
-	<source src="/background.mov" type="video/mp4" />
+	<source src="/background.mp4" type="video/mp4" />
 </video>
 
 <svelte:head>
@@ -35,6 +35,7 @@
 
 		z-index: -1;
 		pointer-events: none;
+		filter: opacity(30%);
 	}
 
 	main {
